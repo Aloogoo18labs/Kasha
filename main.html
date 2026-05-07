@@ -538,3 +538,63 @@
           </div>
 
           <div class="card">
+            <h2>Recent decisions</h2>
+            <table class="table" id="decTable">
+              <thead>
+                <tr>
+                  <th>ts</th>
+                  <th>action</th>
+                  <th>qty</th>
+                  <th>notional</th>
+                  <th>strength</th>
+                  <th>reason</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h2>Orders & fills</h2>
+            <div class="row">
+              <button class="secondary" id="btnOrders">Refresh orders</button>
+              <button class="secondary" id="btnFills">Refresh fills</button>
+            </div>
+            <div style="height: 12px"></div>
+            <table class="table" id="fillsTable">
+              <thead>
+                <tr>
+                  <th>ts</th>
+                  <th>side</th>
+                  <th>qty</th>
+                  <th>price</th>
+                  <th>fee</th>
+                  <th>order</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>Built for local use. Kasha only calls your configured API base URL.</div>
+        <div class="mono">Shortcuts: <span class="kbd">Ctrl+P</span> ping, <span class="kbd">Ctrl+R</span> reload, <span class="kbd">Ctrl+B</span> backtest</div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        const $ = (id) => document.getElementById(id);
+        const logBox = $("logBox");
+
+        const ui = {
+          apiBase: $("apiBase"),
+          apiBaseMono: $("apiBaseMono"),
+          refreshRate: $("refreshRate"),
+          authSubject: $("authSubject"),
+          authTtl: $("authTtl"),
+          tokenState: $("tokenState"),
