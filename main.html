@@ -478,3 +478,63 @@
             </div>
           </div>
 
+          <div class="card">
+            <h2>Live log (events)</h2>
+            <div id="logBox" class="logs">Kasha ready.\n</div>
+            <div class="btnrow">
+              <button class="secondary" id="btnLogClear">Clear</button>
+              <button class="secondary" id="btnLogCopy">Copy</button>
+              <button class="secondary" id="btnLogFreeze">Freeze</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h2>Equity</h2>
+            <div class="chartWrap">
+              <canvas id="eqChart" width="1200" height="300"></canvas>
+              <div class="chartMeta">
+                <div>Series: <span id="eqSeries" class="mono">--</span></div>
+                <div>Last: <span id="eqLast" class="mono">--</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Backtest summary</h2>
+            <div class="row3">
+              <div class="pill">
+                <small>run</small>
+                <strong id="btRun" class="mono">--</strong>
+              </div>
+              <div class="pill">
+                <small>fills</small>
+                <strong id="btFills" class="mono">--</strong>
+              </div>
+              <div class="pill">
+                <small>end equity</small>
+                <strong id="btEquity" class="mono">--</strong>
+              </div>
+            </div>
+            <div class="row3" style="margin-top: 10px">
+              <div class="pill">
+                <small>fees</small>
+                <strong id="btFees" class="mono">--</strong>
+              </div>
+              <div class="pill">
+                <small>drawdown</small>
+                <strong id="btDD" class="mono">--</strong>
+              </div>
+              <div class="pill">
+                <small>sharpe-like</small>
+                <strong id="btSharpe" class="mono">--</strong>
+              </div>
+            </div>
+            <div class="field" style="margin-top: 10px">
+              <label>Raw JSON</label>
+              <textarea id="btJson" spellcheck="false"></textarea>
+            </div>
+          </div>
+
+          <div class="card">
