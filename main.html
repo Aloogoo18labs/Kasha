@@ -778,3 +778,63 @@
           for (let i = 0; i < series.length; i++) {
             const x = xScale(i);
             const y = yScale(series[i].equity);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.lineTo(xScale(series.length - 1), H - 20);
+          ctx.lineTo(xScale(0), H - 20);
+          ctx.closePath();
+          ctx.fill();
+
+          // labels
+          ctx.fillStyle = "rgba(148, 163, 184, 0.9)";
+          ctx.font = "12px ui-monospace, Menlo, Consolas, monospace";
+          ctx.fillText("min " + fmtMoney(minY), 22, H - 26);
+          ctx.fillText("max " + fmtMoney(maxY), 22, 26);
+        }
+
+        function renderBacktest(res) {
+          if (!res) {
+            ui.btRun.textContent = "--";
+            ui.btFills.textContent = "--";
+            ui.btEquity.textContent = "--";
+            ui.btFees.textContent = "--";
+            ui.btDD.textContent = "--";
+            ui.btSharpe.textContent = "--";
+            ui.btJson.value = "";
+            return;
+          }
+          ui.btRun.textContent = (res.run_id || "--").slice(0, 10);
+          ui.btFills.textContent = String(res.fills ?? "--");
+          ui.btEquity.textContent = fmtMoney(res.end_equity);
+          ui.btFees.textContent = fmtMoney(res.fees_paid);
+          ui.btDD.textContent = fmtMoney(res.max_drawdown);
+          ui.btSharpe.textContent = (res.sharpe_like ?? 0).toFixed(3);
+          ui.btJson.value = safeJson(res);
+        }
+
+        function renderDecisions(list) {
+          clearTable(ui.decTable);
+          (list || []).slice(-80).reverse().forEach((d) => {
+            const tr = document.createElement("tr");
+            const tds = [
+              fmtTs(d.ts),
+              d.action,
+              fmtMoney(d.qty),
+              fmtMoney(d.notional),
+              (d.strength ?? 0).toFixed(2),
+              d.reason,
+            ];
+            tds.forEach((txt, idx) => {
+              const td = document.createElement("td");
+              if (idx === 1) {
+                const cls = d.action === "buy" ? "ok" : d.action === "sell" ? "bad" : "warn";
+                td.appendChild(makeTag(txt, cls));
+              } else {
+                td.textContent = txt;
+              }
+              tr.appendChild(td);
+            });
+            ui.decTable.appendChild(tr);
+          });
+        }
