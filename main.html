@@ -1018,3 +1018,63 @@
         // Wire buttons
         $("btnQuickPing").addEventListener("click", ping);
         $("btnMint").addEventListener("click", async () => {
+          try {
+            await mintToken();
+          } catch (e) {
+            appendLog("mint failed: " + String(e.message || e), "auth");
+          }
+        });
+        $("btnClearToken").addEventListener("click", () => {
+          setToken("");
+          appendLog("token cleared", "auth");
+        });
+        $("btnLoadConfig").addEventListener("click", async () => {
+          try {
+            const obj = await apiFetch("/api/config", { method: "GET" });
+            appendLog("config " + (obj.config && obj.config.symbol ? obj.config.symbol : "loaded"), "data");
+          } catch (e) {
+            appendLog("config fetch failed: " + String(e.message || e), "err");
+          }
+        });
+        $("btnLoadState").addEventListener("click", async () => {
+          try {
+            await fetchState();
+          } catch (e) {
+            appendLog("state fetch failed: " + String(e.message || e), "err");
+          }
+        });
+        $("btnReload").addEventListener("click", async () => {
+          try {
+            await reloadCsv();
+          } catch (e) {
+            appendLog("reload failed: " + String(e.message || e), "err");
+          }
+        });
+        $("btnBacktest").addEventListener("click", async () => {
+          try {
+            await runBacktest();
+          } catch (e) {
+            appendLog("backtest failed: " + String(e.message || e), "err");
+          }
+        });
+        $("btnEvents").addEventListener("click", async () => {
+          try {
+            await drainEvents();
+          } catch (e) {
+            appendLog("events failed: " + String(e.message || e), "err");
+          }
+        });
+        $("btnSnapshot").addEventListener("click", snapshotAll);
+        $("btnOrders").addEventListener("click", async () => {
+          try {
+            await fetchOrders();
+          } catch (e) {
+            appendLog("orders failed: " + String(e.message || e), "err");
+          }
+        });
+        $("btnFills").addEventListener("click", async () => {
+          try {
+            await fetchFills();
+          } catch (e) {
+            appendLog("fills failed: " + String(e.message || e), "err");
+          }
