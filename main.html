@@ -958,3 +958,63 @@
           });
           appendLog("backtest queued cash=" + cash, "job");
           return obj;
+        }
+
+        async function snapshotAll() {
+          const ok = await ping();
+          if (!ok) return;
+          try {
+            await fetchState();
+          } catch (e) {
+            appendLog("fetchState failed: " + String(e.message || e), "err");
+          }
+          try {
+            await fetchEquity();
+          } catch (e) {
+            appendLog("fetchEquity failed: " + String(e.message || e), "err");
+          }
+          try {
+            await fetchDecisions();
+          } catch (e) {
+            appendLog("fetchDecisions failed: " + String(e.message || e), "err");
+          }
+          try {
+            await fetchFills();
+          } catch (e) {
+            appendLog("fetchFills failed: " + String(e.message || e), "err");
+          }
+          appendLog("snapshot complete " + nowIso(), "ok");
+        }
+
+        function setRefresh(ms) {
+          if (state.refreshTimer) {
+            clearInterval(state.refreshTimer);
+            state.refreshTimer = null;
+          }
+          if (!ms || ms <= 0) return;
+          state.refreshTimer = setInterval(async () => {
+            try {
+              await fetchState();
+              await drainEvents();
+            } catch (_) {
+              // ignore
+            }
+          }, ms);
+        }
+
+        function copyLogs() {
+          const text = logBox.textContent || "";
+          navigator.clipboard
+            .writeText(text)
+            .then(() => appendLog("logs copied", "ui"))
+            .catch((e) => appendLog("copy failed: " + String(e.message || e), "ui"));
+        }
+
+        function tickClock() {
+          const d = new Date();
+          ui.clock.textContent = d.toLocaleTimeString();
+        }
+
+        // Wire buttons
+        $("btnQuickPing").addEventListener("click", ping);
+        $("btnMint").addEventListener("click", async () => {
