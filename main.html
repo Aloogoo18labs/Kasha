@@ -598,3 +598,63 @@
           authSubject: $("authSubject"),
           authTtl: $("authTtl"),
           tokenState: $("tokenState"),
+          dot: $("dot"),
+          statusText: $("statusText"),
+          statusDetail: $("statusDetail"),
+          clock: $("clock"),
+          startCash: $("startCash"),
+          eventLimit: $("eventLimit"),
+          eqChart: $("eqChart"),
+          eqSeries: $("eqSeries"),
+          eqLast: $("eqLast"),
+          btRun: $("btRun"),
+          btFills: $("btFills"),
+          btEquity: $("btEquity"),
+          btFees: $("btFees"),
+          btDD: $("btDD"),
+          btSharpe: $("btSharpe"),
+          btJson: $("btJson"),
+          decTable: $("decTable").querySelector("tbody"),
+          fillsTable: $("fillsTable").querySelector("tbody"),
+        };
+
+        const state = {
+          token: "",
+          frozenLog: false,
+          lastPingAt: 0,
+          lastState: null,
+          lastEquity: [],
+          lastDecisions: [],
+          lastFills: [],
+          refreshTimer: null,
+          chart: {
+            hover: null,
+          },
+        };
+
+        function nowIso() {
+          return new Date().toISOString().replace(".000Z", "Z");
+        }
+
+        function safeJson(x) {
+          try {
+            return JSON.stringify(x, null, 2);
+          } catch (e) {
+            return String(x);
+          }
+        }
+
+        function setToken(tok) {
+          state.token = tok || "";
+          ui.tokenState.textContent = state.token ? "set" : "unset";
+        }
+
+        function setStatus(kind, text, detail) {
+          ui.statusText.textContent = text || "";
+          ui.statusDetail.textContent = detail || "";
+          ui.dot.className = "dot " + (kind || "");
+        }
+
+        function appendLog(line, kind) {
+          if (state.frozenLog) return;
+          const ts = new Date().toLocaleTimeString();
