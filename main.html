@@ -838,3 +838,63 @@
             ui.decTable.appendChild(tr);
           });
         }
+
+        function renderFills(list) {
+          clearTable(ui.fillsTable);
+          (list || []).slice(-80).forEach((f) => {
+            const tr = document.createElement("tr");
+            const sideCls = f.side === "buy" ? "ok" : "bad";
+            const cols = [
+              fmtTs(f.ts),
+              { tag: f.side, cls: sideCls },
+              fmtMoney(f.qty),
+              fmtMoney(f.price),
+              fmtMoney(f.fee),
+              (f.order_id || "--").slice(0, 10),
+            ];
+            cols.forEach((c) => {
+              const td = document.createElement("td");
+              if (typeof c === "object") td.appendChild(makeTag(c.tag, c.cls));
+              else td.textContent = c;
+              tr.appendChild(td);
+            });
+            ui.fillsTable.appendChild(tr);
+          });
+        }
+
+        async function ping() {
+          try {
+            const obj = await apiFetch("/api/ping", { method: "GET" });
+            state.lastPingAt = Date.now();
+            setStatus("ok", "connected", "ping " + obj.ts + " • " + obj.iso);
+            appendLog("ping ok " + obj.iso, "net");
+            return true;
+          } catch (e) {
+            setStatus("bad", "disconnected", String(e.message || e));
+            appendLog("ping failed: " + String(e.message || e), "net");
+            return false;
+          }
+        }
+
+        async function fetchState() {
+          const obj = await apiFetch("/api/state", { method: "GET" });
+          state.lastState = obj.state;
+          const st = obj.state;
+          const txt = st.status || "unknown";
+          const detail = st.detail || "";
+          const kind = txt === "ready" ? "ok" : txt === "loading" || txt === "backtesting" ? "warn" : "bad";
+          setStatus(kind, txt, detail);
+          $("subtitle").textContent = `${st.app} • ${st.instance_id}`;
+          renderBacktest(st.last_backtest);
+          return obj;
+        }
+
+        async function fetchEquity() {
+          const obj = await apiFetch("/api/equity", { method: "GET" });
+          const eq = obj.equity || [];
+          state.lastEquity = eq;
+          ui.eqSeries.textContent = String(eq.length);
+          ui.eqLast.textContent = eq.length ? fmtMoney(eq[eq.length - 1].equity) : "--";
+          drawEquity(eq);
+          return obj;
+        }
