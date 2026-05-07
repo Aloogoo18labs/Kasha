@@ -898,3 +898,63 @@
           drawEquity(eq);
           return obj;
         }
+
+        async function fetchDecisions() {
+          const obj = await apiFetch("/api/decisions", { method: "GET" });
+          state.lastDecisions = obj.decisions || [];
+          renderDecisions(state.lastDecisions);
+          return obj;
+        }
+
+        async function fetchFills() {
+          const obj = await apiFetch("/api/fills?limit=200", { method: "GET" });
+          state.lastFills = obj.fills || [];
+          renderFills(state.lastFills.slice().reverse());
+          return obj;
+        }
+
+        async function fetchOrders() {
+          const obj = await apiFetch("/api/orders?limit=120", { method: "GET" });
+          const orders = obj.orders || [];
+          appendLog("orders " + orders.length, "data");
+          return obj;
+        }
+
+        async function drainEvents() {
+          const lim = Number(ui.eventLimit.value || "250") || 250;
+          const obj = await apiFetch("/api/events?limit=" + encodeURIComponent(String(lim)), { method: "GET" });
+          (obj.events || []).forEach((ev) => {
+            if (ev.t === "status") appendLog(`status ${ev.status} • ${ev.detail || ""}`, "evt");
+            else if (ev.t === "error") appendLog(`error ${ev.message}`, "evt");
+            else if (ev.t === "backtest") appendLog(`backtest end_eq=${fmtMoney(ev.result && ev.result.end_equity)}`, "evt");
+            else appendLog("event " + safeJson(ev).slice(0, 220), "evt");
+          });
+          return obj;
+        }
+
+        async function mintToken() {
+          const subject = (ui.authSubject.value || "kasha").trim() || "kasha";
+          const ttl = Number(ui.authTtl.value || "7200") || 7200;
+          const obj = await apiFetch("/api/auth/mint", {
+            method: "POST",
+            body: JSON.stringify({ subject: subject, ttl_s: ttl }),
+          });
+          setToken(obj.token || "");
+          appendLog("token minted for " + obj.subject, "auth");
+          return obj;
+        }
+
+        async function reloadCsv() {
+          const obj = await apiFetch("/api/data/reload", { method: "POST", body: "{}" });
+          appendLog("reload queued", "job");
+          return obj;
+        }
+
+        async function runBacktest() {
+          const cash = Number(ui.startCash.value || "1000") || 1000;
+          const obj = await apiFetch("/api/backtest/run", {
+            method: "POST",
+            body: JSON.stringify({ start_cash: cash }),
+          });
+          appendLog("backtest queued cash=" + cash, "job");
+          return obj;
