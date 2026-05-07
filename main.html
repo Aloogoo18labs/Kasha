@@ -418,3 +418,63 @@
                   <option value="600">0.6s</option>
                   <option value="1200" selected>1.2s</option>
                   <option value="2000">2.0s</option>
+                  <option value="5000">5.0s</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Subject (token mint)</label>
+                <input id="authSubject" value="kasha" />
+              </div>
+              <div class="field">
+                <label>TTL seconds</label>
+                <input id="authTtl" value="7200" />
+              </div>
+            </div>
+            <div class="btnrow">
+              <button id="btnMint">Mint token</button>
+              <button class="secondary" id="btnClearToken">Clear token</button>
+              <button class="secondary" id="btnLoadConfig">Fetch config</button>
+              <button class="secondary" id="btnLoadState">Fetch state</button>
+            </div>
+            <div class="statusline">
+              <div class="statusleft">
+                <div id="dot" class="dot"></div>
+                <div>
+                  <b id="statusText">disconnected</b><br />
+                  <span id="statusDetail">waiting for ping</span>
+                </div>
+              </div>
+              <div class="mono" id="clock">--:--:--</div>
+            </div>
+            <div class="hint" style="margin-top: 10px">
+              Tip: start the bot with <span class="kbd">python meowster.py serve</span>, then open this file in your browser.
+              For API reads that need auth, mint a token once and Kasha will attach it automatically.
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Actions</h2>
+            <div class="row">
+              <div class="field">
+                <label>Backtest start cash</label>
+                <input id="startCash" value="1000" />
+              </div>
+              <div class="field">
+                <label>Event drain limit</label>
+                <input id="eventLimit" value="250" />
+              </div>
+            </div>
+            <div class="btnrow">
+              <button id="btnReload">Reload CSV</button>
+              <button id="btnBacktest">Run backtest</button>
+              <button class="secondary" id="btnEvents">Drain events</button>
+              <button class="secondary" id="btnSnapshot">Snapshot all</button>
+            </div>
+            <div class="hint" style="margin-top: 10px">
+              Reload reads the CSV specified by the bot config; backtest runs the strategy engine with spread+slippage+fee model.
+              This UI is read-only for orders/fills (paper results only).
+            </div>
+          </div>
+
