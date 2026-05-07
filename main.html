@@ -1078,3 +1078,52 @@
           } catch (e) {
             appendLog("fills failed: " + String(e.message || e), "err");
           }
+        });
+        $("btnLogClear").addEventListener("click", () => {
+          logBox.textContent = "";
+          appendLog("log cleared", "ui");
+        });
+        $("btnLogCopy").addEventListener("click", copyLogs);
+        $("btnLogFreeze").addEventListener("click", () => {
+          state.frozenLog = !state.frozenLog;
+          appendLog("log " + (state.frozenLog ? "frozen" : "unfrozen"), "ui");
+          $("btnLogFreeze").textContent = state.frozenLog ? "Unfreeze" : "Freeze";
+        });
+
+        // Refresh rate
+        ui.refreshRate.addEventListener("change", () => {
+          const ms = Number(ui.refreshRate.value || "0") || 0;
+          setRefresh(ms);
+          appendLog("auto refresh " + (ms ? ms + "ms" : "off"), "ui");
+        });
+
+        // Keyboard shortcuts
+        window.addEventListener("keydown", (ev) => {
+          if (!ev.ctrlKey) return;
+          const k = String(ev.key || "").toLowerCase();
+          if (k === "p") {
+            ev.preventDefault();
+            ping();
+          } else if (k === "r") {
+            ev.preventDefault();
+            reloadCsv();
+          } else if (k === "b") {
+            ev.preventDefault();
+            runBacktest();
+          }
+        });
+
+        // Initial
+        tickClock();
+        setInterval(tickClock, 1000);
+        setToken("");
+        setStatus("", "disconnected", "open Kasha, then ping");
+        appendLog("Kasha loaded " + nowIso(), "ui");
+
+        // paint empty chart
+        drawEquity([]);
+        setRefresh(Number(ui.refreshRate.value || "0") || 0);
+      })();
+    </script>
+  </body>
+</html>
