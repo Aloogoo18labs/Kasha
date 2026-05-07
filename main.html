@@ -358,3 +358,63 @@
       .hint {
         font-size: 12px;
         color: var(--muted);
+        line-height: 1.4;
+      }
+      .kbd {
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: rgba(148, 163, 184, 0.08);
+      }
+      .footer {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="title">
+            <b>Kasha</b>
+            <span id="subtitle">meowster console</span>
+          </div>
+        </div>
+        <div class="topbar">
+          <div class="pill">
+            <small>API</small>
+            <strong id="apiBaseMono">http://127.0.0.1:8844</strong>
+          </div>
+          <div class="pill">
+            <small>Token</small>
+            <strong id="tokenState" class="mono">unset</strong>
+          </div>
+          <button class="secondary" id="btnQuickPing" title="Ping server (Ctrl+P)">Ping</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <div class="split">
+          <div class="card">
+            <h2>Connection</h2>
+            <div class="row">
+              <div class="field">
+                <label>API base URL</label>
+                <input id="apiBase" value="http://127.0.0.1:8844" />
+              </div>
+              <div class="field">
+                <label>Auto refresh</label>
+                <select id="refreshRate">
+                  <option value="0">Off</option>
+                  <option value="600">0.6s</option>
+                  <option value="1200" selected>1.2s</option>
+                  <option value="2000">2.0s</option>
